@@ -6,6 +6,8 @@ import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     private final ShareMapper shareMapper;
+    private final DiscoveryClient discoveryClient;
 
     @GetMapping("test")
     public List<Share> testInsert(){
@@ -42,5 +45,16 @@ public class TestController {
         shareMapper.insertSelective(share);
 
         return shareMapper.selectAll();
+    }
+
+    /** 
+     * 测试从注册中心做服务发现
+     * @return 服务的所有实例列表
+     */
+    @GetMapping("/test2")
+    public List<ServiceInstance> setDiscoveryClient(){
+        // 查询content-center的实例列表
+        // consul/zookeeper/eureka 等都可以用discoveryClient
+        return this.discoveryClient.getInstances("user-center");
     }
 }

@@ -2,13 +2,30 @@ server:
   port: 8050
 
 spring:
+  profiles:
+    active: dev
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/content_center?characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: root
     password: root
-  profiles:
-    active: dev
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        # 服务实例元数据
+        metadata:
+          instance: a
+
+#        # namespace 多环境隔离
+#        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
+#        # 集群 多机房优先调用
+#        cluster-name: CDC
+
+  application:
+    name: content-center
 
 ---
 spring:
