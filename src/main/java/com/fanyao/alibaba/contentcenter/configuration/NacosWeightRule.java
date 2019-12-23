@@ -37,7 +37,6 @@ public class NacosWeightRule extends AbstractLoadBalancerRule {
 
     @Override
     public Server choose(Object o) {
-
         try {
             DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) this.getLoadBalancer();
 

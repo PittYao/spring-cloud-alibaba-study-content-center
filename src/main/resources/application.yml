@@ -20,7 +20,10 @@ spring:
         server-addr: localhost:8848
         # 服务实例元数据
         metadata:
-          instance: a
+          # 定义本服务版本
+          version: v1
+          # 定义调用其他服务的版本
+          target-version: v1
 
 #        # namespace 多环境隔离
 #        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
