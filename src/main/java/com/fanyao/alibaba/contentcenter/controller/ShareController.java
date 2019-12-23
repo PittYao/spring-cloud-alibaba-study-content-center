@@ -29,4 +29,9 @@ public class ShareController {
     public ShareDTO findByIdByRibbon(@PathVariable Integer id) {
         return shareService.findByIdRibbon(id);
     }
+
+    @GetMapping("/fegin/{id}")
+    public ShareDTO findByIdByFegin(@PathVariable Integer id) {
+        return shareService.findByIdByFegin(id);
+    }
 }
