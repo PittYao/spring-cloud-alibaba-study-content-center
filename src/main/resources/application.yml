@@ -2,6 +2,9 @@ server:
   port: 8050
 
 spring:
+  application:
+    name: content-center
+
   profiles:
     active: dev
 
@@ -24,9 +27,17 @@ spring:
 #        # 集群 多机房优先调用
 #        cluster-name: CDC
 
-  application:
-    name: content-center
+# ribbon
+# 开启饥饿加载(项目启动就创建实例),解决指定服务第一次请求过慢的问题
+ribbon:
+  eager-load:
+    enabled: true
+    clients: user-center
 
+# 指定user-center服务ribbon的负载均衡策略
+#user-center:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
 ---
 spring:
   profiles: dev

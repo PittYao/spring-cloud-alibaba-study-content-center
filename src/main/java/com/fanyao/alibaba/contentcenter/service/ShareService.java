@@ -71,6 +71,27 @@ public class ShareService {
         return shareDTO;
     }
 
+    // ribbon负载均衡器 消费实例
+    public ShareDTO findByIdRibbon(Integer id) {
+        Share share = shareMapper.selectByPrimaryKey(id);
+
+        // 发布人id
+        Integer userId = share.getUserId();
+        // 查询用户服务 发布人信息 http://{服务名}/xxx/
+        UserDTO userDTO = this.restTemplate.getForObject(
+                "http://user-center/users/{id}",
+                UserDTO.class,
+                userId
+        );
+
+        // 消息装配
+        ShareDTO shareDTO = new ShareDTO();
+        BeanUtils.copyProperties(share, shareDTO);
+        shareDTO.setWxNickname(Objects.requireNonNull(userDTO).getWxNickname());
+
+        return shareDTO;
+    }
+
     public static void main(String[] args) {
         RestTemplate restTemplate = new RestTemplate();
 

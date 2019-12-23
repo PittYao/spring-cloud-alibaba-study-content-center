@@ -24,4 +24,9 @@ public class ShareController {
     public ShareDTO findById(@PathVariable Integer id) {
         return shareService.findById(id);
     }
+
+    @GetMapping("/ribbon/{id}")
+    public ShareDTO findByIdByRibbon(@PathVariable Integer id) {
+        return shareService.findByIdRibbon(id);
+    }
 }
