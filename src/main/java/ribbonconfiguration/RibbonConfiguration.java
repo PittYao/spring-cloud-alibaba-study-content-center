@@ -1,5 +1,6 @@
 package ribbonconfiguration;
 
+import com.fanyao.alibaba.contentcenter.configuration.NacosSameClusterWeightRule;
 import com.fanyao.alibaba.contentcenter.configuration.NacosWeightRule;
 import com.netflix.loadbalancer.IRule;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,9 @@ public class RibbonConfiguration {
 
     @Bean
     public IRule ribbonRule() {
-        return new NacosWeightRule();
-//        return new RandomRule();
+        return new NacosSameClusterWeightRule();
+//      return new NacosWeightRule();
+
+//      return new RandomRule();
     }
 }

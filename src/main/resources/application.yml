@@ -24,8 +24,8 @@ spring:
 
 #        # namespace 多环境隔离
 #        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
-#        # 集群 多机房优先调用
-#        cluster-name: CDC
+        # 集群 多机房优先调用
+        cluster-name: CDC
 
 # ribbon
 # 开启饥饿加载(项目启动就创建实例),解决指定服务第一次请求过慢的问题
