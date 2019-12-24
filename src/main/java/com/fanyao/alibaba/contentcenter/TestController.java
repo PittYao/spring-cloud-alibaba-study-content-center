@@ -3,7 +3,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
+import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
+import com.fanyao.alibaba.contentcenter.feginclient.TestUserCenterFeginClient;
+import com.fanyao.alibaba.contentcenter.feginclient.UserCenterFeginClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -23,6 +26,8 @@ public class TestController {
 
     private final ShareMapper shareMapper;
     private final DiscoveryClient discoveryClient;
+    private final TestUserCenterFeginClient testUserCenterFeginClient;
+
 
     @GetMapping("test")
     public List<Share> testInsert(){
@@ -56,5 +61,21 @@ public class TestController {
         // 查询content-center的实例列表
         // consul/zookeeper/eureka 等都可以用discoveryClient
         return this.discoveryClient.getInstances("user-center");
+    }
+
+    /**
+     * 测试feign GET 请求
+     */
+    @GetMapping("/test-get")
+    public UserDTO query(UserDTO userDTO){
+        return testUserCenterFeginClient.query(userDTO);
+    }
+
+    /**
+     * 测试feign GET 请求
+     */
+    @GetMapping("/test-get/common")
+    public UserDTO queryByCommon(UserDTO userDTO){
+        return testUserCenterFeginClient.query(userDTO.getId(),userDTO.getWxId());
     }
 }

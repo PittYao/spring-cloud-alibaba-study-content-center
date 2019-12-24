@@ -10,6 +10,8 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @MapperScan(basePackages = "com.fanyao.alibaba.contentcenter")
 @SpringBootApplication
+// defaultConfiguration 指定全局feign日志级别
+//@EnableFeignClients(defaultConfiguration = GlobalFeignConfiguration.class)
 @EnableFeignClients
 public class UserCenterApplication {
 

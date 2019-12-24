@@ -65,7 +65,7 @@ public class NacosSameClusterWeightRule extends AbstractLoadBalancerRule {
                         .filter(instance -> Objects.equals(targetVersion, instance.getMetadata().get("version")))
                         .collect(Collectors.toList());
                 if (CollectionUtils.isEmpty(chooseInstances)) {
-                    log.error("未找到元数据匹配的目标实例！请检查配置。targetVersion = {}, instance = {}", targetVersion, instances);
+                    log.error("未找到元数据版本号匹配的目标实例！请检查配置。targetVersion = {}, instance = {}", targetVersion, instances);
                     return null;
                 }
             }

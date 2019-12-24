@@ -14,6 +14,10 @@ spring:
     username: root
     password: root
 
+  # 允许编写多个feignClient且同名
+  main:
+    allow-bean-definition-overriding: true
+
   cloud:
     nacos:
       discovery:
@@ -35,13 +39,34 @@ spring:
 ribbon:
   eager-load:
     enabled: true
-    # 指定启动哪些服务
+    # 指定饥饿加载哪些服务
     clients: user-center
 
 # 指定user-center服务ribbon的负载均衡策略
 #user-center:
 #  ribbon:
 #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+logging:
+  level:
+  # 指定具体fegin的日志级别，必须配置
+    com.fanyao.alibaba.contentcenter.feginclient.UserCenterFeginClient: debug
+    com.fanyao.alibaba.contentcenter.feginclient.TestUserCenterFeginClient: debug
+
+# feign指定服务的日志级别
+feign:
+  client:
+    config:
+      # 全局配置
+      default:
+        loggerLevel: full
+        connectTimeout: 5000
+        readTimeout: 5000
+
+#      # 细粒度配置 调用服务的服务名
+#      user-center:
+#        loggerLevel: full
+
+
 ---
 spring:
   profiles: dev
