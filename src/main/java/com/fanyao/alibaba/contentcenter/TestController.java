@@ -5,13 +5,14 @@ import java.util.List;
 import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
-import com.fanyao.alibaba.contentcenter.feginclient.TestUserCenterFeginClient;
-import com.fanyao.alibaba.contentcenter.feginclient.UserCenterFeginClient;
+import com.fanyao.alibaba.contentcenter.feignclient.TestFeignOutRibbonClient;
+import com.fanyao.alibaba.contentcenter.feignclient.TestUserCenterFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,7 +27,8 @@ public class TestController {
 
     private final ShareMapper shareMapper;
     private final DiscoveryClient discoveryClient;
-    private final TestUserCenterFeginClient testUserCenterFeginClient;
+    private final TestUserCenterFeignClient testUserCenterFeignClient;
+    private final TestFeignOutRibbonClient testFeignOutRibbonClient;
 
 
     @GetMapping("test")
@@ -68,7 +70,7 @@ public class TestController {
      */
     @GetMapping("/test-get")
     public UserDTO query(UserDTO userDTO){
-        return testUserCenterFeginClient.query(userDTO);
+        return testUserCenterFeignClient.query(userDTO);
     }
 
     /**
@@ -76,6 +78,22 @@ public class TestController {
      */
     @GetMapping("/test-get/common")
     public UserDTO queryByCommon(UserDTO userDTO){
-        return testUserCenterFeginClient.query(userDTO.getId(),userDTO.getWxId());
+        return testUserCenterFeignClient.query(userDTO.getId(),userDTO.getWxId());
+    }
+
+    /**
+     * 测试feign POST 请求
+     */
+    @PostMapping("/test-post")
+    public UserDTO post(UserDTO userDTO){
+        return testUserCenterFeignClient.post(userDTO);
+    }
+
+    /**
+     * 测试feign 脱离ribbon单独使用
+     */
+    @GetMapping("/baidu")
+    public String feignOutRibbon(){
+        return testFeignOutRibbonClient.index();
     }
 }

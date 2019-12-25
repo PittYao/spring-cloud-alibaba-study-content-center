@@ -4,7 +4,7 @@ import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
-import com.fanyao.alibaba.contentcenter.feginclient.UserCenterFeginClient;
+import com.fanyao.alibaba.contentcenter.feignclient.UserCenterFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -32,7 +32,7 @@ public class ShareService {
     private final ShareMapper shareMapper;
     private final RestTemplate restTemplate;
     private final DiscoveryClient discoveryClient;
-    private final UserCenterFeginClient userCenterFeginClient;
+    private final UserCenterFeignClient userCenterFeignClient;
 
     // 自定义 随机负载均衡器 消费实例
     public ShareDTO findById(Integer id) {
@@ -95,13 +95,13 @@ public class ShareService {
     }
 
     // fegin消费实例
-    public ShareDTO findByIdByFegin(Integer id) {
+    public ShareDTO findByIdByFeign(Integer id) {
         Share share = shareMapper.selectByPrimaryKey(id);
 
         // 发布人id
         Integer userId = share.getUserId();
         // 查询用户服务 发布人信息
-        UserDTO userDTO = userCenterFeginClient.findByUserId(userId);
+        UserDTO userDTO = userCenterFeignClient.findByUserId(userId);
 
         // 消息装配
         ShareDTO shareDTO = new ShareDTO();

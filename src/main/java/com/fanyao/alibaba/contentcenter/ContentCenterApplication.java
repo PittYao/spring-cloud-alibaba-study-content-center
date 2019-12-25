@@ -11,12 +11,13 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan(basePackages = "com.fanyao.alibaba.contentcenter")
 @SpringBootApplication
 // defaultConfiguration 指定全局feign日志级别
-//@EnableFeignClients(defaultConfiguration = GlobalFeignConfiguration.class)
-@EnableFeignClients
-public class UserCenterApplication {
+// @EnableFeignClients(defaultConfiguration = GlobalFeignConfiguration.class)
+// @EnableFeignClients() 一定要加()
+@EnableFeignClients()
+public class ContentCenterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserCenterApplication.class, args);
+        SpringApplication.run(ContentCenterApplication.class, args);
     }
 
     // @LoadBalanced 使用ribbon

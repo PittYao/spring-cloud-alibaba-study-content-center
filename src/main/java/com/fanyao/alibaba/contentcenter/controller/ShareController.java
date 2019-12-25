@@ -31,7 +31,7 @@ public class ShareController {
     }
 
     @GetMapping("/fegin/{id}")
-    public ShareDTO findByIdByFegin(@PathVariable Integer id) {
-        return shareService.findByIdByFegin(id);
+    public ShareDTO findByIdByFeign(@PathVariable Integer id) {
+        return shareService.findByIdByFeign(id);
     }
 }

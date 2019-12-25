@@ -1,4 +1,4 @@
-package com.fanyao.alibaba.contentcenter.feginclient;
+package com.fanyao.alibaba.contentcenter.feignclient;
 
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @FeignClient(name = "user-center")
 //@FeignClient(name = "user-center",configuration = GlobalFeignConfiguration.class)
-public interface TestUserCenterFeginClient {
+public interface TestUserCenterFeignClient {
     /**
      * http://user-center/users/q?id=xxx&wxid=xxx&...
      * 不支持feign继承
@@ -26,4 +26,11 @@ public interface TestUserCenterFeginClient {
      */
     @GetMapping("users/q")
     UserDTO query(@RequestParam("id") Integer id,@RequestParam("wxId") String wxId);
+
+    /**
+     * http://user-center/users/post
+     * 支持feign继承
+     */
+    @PostMapping("users/post")
+    UserDTO post(@RequestBody UserDTO userDTO);
 }

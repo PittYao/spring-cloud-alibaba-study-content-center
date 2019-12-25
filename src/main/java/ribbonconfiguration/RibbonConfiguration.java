@@ -15,7 +15,7 @@ public class RibbonConfiguration {
 
     @Bean
     public IRule ribbonRule() {
-        // 自定义nacos负载均衡规则
+        // 自定义nacos 版本控制 和 权重 负载均衡规则
         return new NacosSameClusterWeightRule();
         // 自定义nacos权重负载均衡规则
 //      return new NacosWeightRule();

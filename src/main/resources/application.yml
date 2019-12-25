@@ -34,7 +34,7 @@ spring:
         # 集群名称 多机房优先调用
         cluster-name: CDC
 
-# ribbon
+# ribbon 不支持 配置文件的全局配置
 # 开启饥饿加载(项目启动就创建实例),解决指定服务第一次请求过慢的问题
 ribbon:
   eager-load:
@@ -46,11 +46,11 @@ ribbon:
 #user-center:
 #  ribbon:
 #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+
 logging:
   level:
-  # 指定具体fegin的日志级别，必须配置
-    com.fanyao.alibaba.contentcenter.feginclient.UserCenterFeginClient: debug
-    com.fanyao.alibaba.contentcenter.feginclient.TestUserCenterFeginClient: debug
+  # 指定具体feign的日志级别，必须配置
+    com.fanyao.alibaba.contentcenter.feignclient.*: debug
 
 # feign指定服务的日志级别
 feign:
@@ -58,7 +58,7 @@ feign:
     config:
       # 全局配置
       default:
-        loggerLevel: full
+        loggerLevel: FULL
         connectTimeout: 5000
         readTimeout: 5000
 
@@ -66,6 +66,14 @@ feign:
 #      user-center:
 #        loggerLevel: full
 
+  # feign性能调整: 使用连接池 日志级别设为basic
+  # 切换为http client连接方式，取消掉 默认的URLConnection
+  httpclient:
+    enabled: true
+    # feign 最大连接数
+    max-connections: 200
+    # 单个端点的最大连接数 (根据压测逐步调整这两个值)
+    max-connections-per-route: 50
 
 ---
 spring:

@@ -1,4 +1,4 @@
-package com.fanyao.alibaba.contentcenter.feginclient;
+package com.fanyao.alibaba.contentcenter.feignclient;
 
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @FeignClient(name = "user-center")
 //@FeignClient(name = "user-center",configuration = GlobalFeignConfiguration.class)
-public interface UserCenterFeginClient {
+public interface UserCenterFeignClient {
+
     /** 
      * http://user-center/users/{id}
      */
