@@ -1,6 +1,9 @@
 server:
   port: 8050
 
+nacos-server-addr: localhost:8848
+sentinel-server-addr: localhost:8080
+
 spring:
   application:
     name: content-center
@@ -19,9 +22,10 @@ spring:
     allow-bean-definition-overriding: true
 
   cloud:
+    #-------------------------nacos-----------------------#
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${nacos-server-addr}
         # 服务实例元数据
         metadata:
           # 定义本服务版本
@@ -33,7 +37,12 @@ spring:
 #        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
         # 集群名称 多机房优先调用
         cluster-name: CDC
+    #-------------------------sentinel-----------------------#
+    sentinel:
+      transport:
+        dashboard: ${sentinel-server-addr}
 
+# ---------------------ribbon--------------------------------#
 # ribbon 不支持 配置文件的全局配置
 # 开启饥饿加载(项目启动就创建实例),解决指定服务第一次请求过慢的问题
 ribbon:
@@ -47,6 +56,7 @@ ribbon:
 #  ribbon:
 #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
 
+# ---------------------feign--------------------------------#
 logging:
   level:
   # 指定具体feign的日志级别，必须配置
@@ -75,6 +85,12 @@ feign:
     # 单个端点的最大连接数 (根据压测逐步调整这两个值)
     max-connections-per-route: 50
 
+# ---------------------actuator--------------------------------#
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 ---
 spring:
   profiles: dev
