@@ -30,7 +30,7 @@ public class ShareController {
         return shareService.findByIdRibbon(id);
     }
 
-    @GetMapping("/fegin/{id}")
+    @GetMapping("/feign/{id}")
     public ShareDTO findByIdByFeign(@PathVariable Integer id) {
         return shareService.findByIdByFeign(id);
     }
