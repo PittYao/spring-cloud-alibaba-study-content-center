@@ -50,7 +50,7 @@ public class ShareService {
 
         // 构建请求地址
         List<String> targetUrls = userInstances.stream()
-                .map(instance -> instance.getUri() + "/users/{id}")
+                .map(instance -> "http://" + instance.getServiceId() + "/users/{id}")
                 .collect(Collectors.toList());
 
         // 随机选择一个服务实例
@@ -116,7 +116,7 @@ public class ShareService {
 
         // GET 调用
         UserDTO userDTO = restTemplate.getForObject(
-                "http://127.0.0.1:8040/users/{id}",
+                "http://127.0.0.1:8041/users/{id}",
                 UserDTO.class,
                 1
         );
