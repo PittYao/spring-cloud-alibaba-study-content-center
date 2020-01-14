@@ -19,7 +19,7 @@ public class MyRequestOriginParser implements RequestOriginParser {
     @Override
     public String parseOrigin(HttpServletRequest request) {
         // TODO 在实际项目中 针对来源的参数 应放到Header中
-        String origin = request.getParameter("origin");
+        String origin = request.getHeader("origin");
         if (Strings.isBlank(origin)) {
             throw new IllegalArgumentException("请求参数必须指定origin");
         }

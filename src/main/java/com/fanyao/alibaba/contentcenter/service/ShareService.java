@@ -1,6 +1,7 @@
 package com.fanyao.alibaba.contentcenter.service;
 
 import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
+import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareAuditDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
@@ -124,5 +125,33 @@ public class ShareService {
         System.out.println(userDTO);
 
         // POST 调用
+    }
+
+    public Share auditById(Integer id, ShareAuditDTO shareAuditDTO) {
+        // 1.只审核未通过的，否则报异常
+        Share share = this.shareMapper.selectByPrimaryKey(id);
+        if (Objects.isNull(share)) {
+            throw new IllegalArgumentException("参数非法!该分享不存在");
+        }
+        if (!Objects.equals("NOT_YET",share.getAuditStatus())) {
+            throw new IllegalArgumentException("参数非法!该分享已通过或拒绝");
+        }
+
+        // 2.修改状态为通过或拒绝
+        share.setAuditStatus(shareAuditDTO.getAuditStatusEnum().toString());
+        this.shareMapper.updateByPrimaryKey(share);
+
+        // 3.如果通过 则为发布人增加积分 (需调其他微服务的api)
+        //   userCenterFeignClient.addBouns(id,500)
+
+        // 当主业务执行完成后，需要执行附属业务，但附属业务比较耗时，我们应当考虑将附属业务
+        // 设为异步执行，不关心附属业务的响应，简短响应时长
+        // 异步是具体实现：
+        // - AsyncRestTemplate
+        // - @Async
+        // - WebClient
+        // - MQ
+
+        return share;
     }
 }
