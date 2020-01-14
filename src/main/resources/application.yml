@@ -33,8 +33,8 @@ spring:
           # 定义调用其他服务的版本
           target-version: v1
 
-#        # namespace 多环境隔离
-#        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
+        #        # namespace 多环境隔离
+        #        namespace: 369a89f7-ade4-4c06-a6d5-2cdf074f9c61
         # 集群名称 多机房优先调用
         cluster-name: CDC
     #-------------------------sentinel-----------------------#
@@ -42,8 +42,8 @@ spring:
       transport:
         dashboard: ${sentinel-server-addr}
       filter:
-        # 关闭对spring 端点保护
-        enabled: false
+        # 打开/关闭对spring 端点保护
+        enabled: true
 
 # ---------------------ribbon--------------------------------#
 # ribbon 不支持 配置文件的全局配置
@@ -62,7 +62,7 @@ ribbon:
 # ---------------------feign--------------------------------#
 logging:
   level:
-  # 指定具体feign的日志级别，必须配置
+    # 指定具体feign的日志级别，必须配置
     com.fanyao.alibaba.contentcenter.feignclient.*: debug
 
 # feign指定服务的日志级别
@@ -75,10 +75,9 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
 
-#      # 细粒度配置 调用服务的服务名
-#      user-center:
-#        loggerLevel: full
-
+  #      # 细粒度配置 调用服务的服务名
+  #      user-center:
+  #        loggerLevel: full
   # feign性能调整: 使用连接池 日志级别设为basic
   # 切换为http client连接方式，取消掉 默认的URLConnection
   httpclient:
@@ -88,12 +87,20 @@ feign:
     # 单个端点的最大连接数 (根据压测逐步调整这两个值)
     max-connections-per-route: 50
 
+  sentinel:
+    # feign整合sentinel
+    enabled: true
+
 # ---------------------actuator--------------------------------#
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+resttemplate:
+  sentinel:
+    # 关闭@SentinelRestTemplate 在开发阶段,不想起用流控和降级设置为false
+    enabled: true
 ---
 spring:
   profiles: dev

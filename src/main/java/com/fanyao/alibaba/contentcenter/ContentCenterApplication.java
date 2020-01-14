@@ -1,5 +1,6 @@
 package com.fanyao.alibaba.contentcenter;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -20,10 +21,12 @@ public class ContentCenterApplication {
         SpringApplication.run(ContentCenterApplication.class, args);
     }
 
-    // @LoadBalanced 使用ribbon
     @Bean
+    // @LoadBalanced RestTemplate 使用ribbon
     @LoadBalanced
-    public RestTemplate restTemplate(){
+    // @SentinelRestTemplate RestTemplate 使用Sentinel
+    @SentinelRestTemplate
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }

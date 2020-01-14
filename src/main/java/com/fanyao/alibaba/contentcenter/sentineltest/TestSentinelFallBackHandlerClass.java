@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author: bugProvider
  * @date: 2020/1/13 15:38
- * @description:
+ * @description: 降级处理类
  */
 @Slf4j
 public class TestSentinelFallBackHandlerClass {

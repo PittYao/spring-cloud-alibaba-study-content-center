@@ -22,10 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +41,7 @@ import java.util.List;
 public class TestController {
 
     private final ShareMapper shareMapper;
+    private final RestTemplate restTemplate;
     private final DiscoveryClient discoveryClient;
     private final TestUserCenterFeignClient testUserCenterFeignClient;
     private final TestFeignOutRibbonClient testFeignOutRibbonClient;
@@ -197,5 +196,18 @@ public class TestController {
             throw new IllegalArgumentException("参数不能为空");
         }
         return "SUCCESS";
+    }
+
+    /**
+     * RestTemplate 整合 sentinel
+     * - 添加  @SentinelRestTemplate
+     */
+    @GetMapping("/test-rest-template-sentinel/{userId}")
+    public UserDTO test(@PathVariable Integer userId) {
+        return this.restTemplate.getForObject(
+                "http://user-center/users/{userId}",
+                UserDTO.class,
+                userId
+        );
     }
 }
