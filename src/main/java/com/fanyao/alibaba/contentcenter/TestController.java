@@ -29,6 +29,7 @@ public class TestController {
     private final DiscoveryClient discoveryClient;
     private final TestUserCenterFeignClient testUserCenterFeignClient;
     private final TestFeignOutRibbonClient testFeignOutRibbonClient;
+    private final TestService testService;
 
 
     @GetMapping("test")
@@ -95,5 +96,24 @@ public class TestController {
     @GetMapping("/baidu")
     public String feignOutRibbon(){
         return testFeignOutRibbonClient.index();
+    }
+
+
+    /**
+     * 测试sentinel 链路流控
+     */
+    @GetMapping("/test-a")
+    public String testA(){
+        this.testService.common();
+        return "test-a";
+    }
+
+    /**
+     * 测试sentinel 链路流控
+     */
+    @GetMapping("/test-b")
+    public String testB(){
+        this.testService.common();
+        return "test-b";
     }
 }
