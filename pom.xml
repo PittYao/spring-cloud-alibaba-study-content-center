@@ -18,6 +18,7 @@
         <java.version>1.8</java.version>
         <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
         <spring.cloud.alibaba.version>2.1.0.RELEASE</spring.cloud.alibaba.version>
+        <rocketmq.version>2.0.3</rocketmq.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -84,6 +85,18 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-sentinel</artifactId>
         </dependency>
+        <!-- sentinel 规则持久化 -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-extension</artifactId>
+        </dependency>
+        <!--rocketmq -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>${rocketmq.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
