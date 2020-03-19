@@ -1,29 +1,36 @@
 package com.fanyao.alibaba.contentcenter.service;
 
+import com.fanyao.alibaba.contentcenter.dao.rocketmq.RocketMqTransactionMapper;
 import com.fanyao.alibaba.contentcenter.dao.share.ShareMapper;
 import com.fanyao.alibaba.contentcenter.domain.dto.msg.UserAddBonusMsgDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareAuditDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareDTO;
 import com.fanyao.alibaba.contentcenter.domain.dto.user.UserDTO;
+import com.fanyao.alibaba.contentcenter.domain.entity.rocketmq.RocketMqTransaction;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
 import com.fanyao.alibaba.contentcenter.domain.enums.AuditStatusEnum;
 import com.fanyao.alibaba.contentcenter.feignclient.UserCenterFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -41,6 +48,7 @@ public class ShareService {
     private final DiscoveryClient discoveryClient;
     private final UserCenterFeignClient userCenterFeignClient;
     private final RocketMQTemplate rocketMQTemplate;
+    private final RocketMqTransactionMapper rocketMqTransactionMapper;
 
     // 自定义 随机负载均衡器 消费实例
     public ShareDTO findById(Integer id) {
@@ -134,7 +142,7 @@ public class ShareService {
         // POST 调用
     }
 
-    @Transactional(rollbackFor = Exception.class)
+
     public Share auditById(Integer id, ShareAuditDTO shareAuditDTO) {
         // 1.只审核未通过的，否则报异常
         Share share = this.shareMapper.selectByPrimaryKey(id);
@@ -145,28 +153,38 @@ public class ShareService {
             throw new IllegalArgumentException("参数非法!该分享已通过或拒绝");
         }
 
-        // 如果是通过状态 则发送MQ
+
         UserAddBonusMsgDTO addBonusMsgDTO = UserAddBonusMsgDTO.builder()
                 .userId(share.getUserId())
                 .bonus(50)
                 .build();
 
-
+        // 如果是审核通过状态 则发送MQ 加积分
         if (AuditStatusEnum.PASS.equals(shareAuditDTO.getAuditStatusEnum())) {
             // TODO 发送半消息
+            String transactionalID = UUID.randomUUID().toString();
+            // 构建消息体
             Message<UserAddBonusMsgDTO> message = MessageBuilder
+                    // MQ 消息体
                     .withPayload(addBonusMsgDTO)
+                    // 设置Header | + 事务id | + share_id
+                    .setHeader(RocketMQHeaders.TRANSACTION_ID, transactionalID)
+                    .setHeader("share_id", id)
                     .build();
+
             this.rocketMQTemplate.sendMessageInTransaction(
                     "txBonusGroup",
                     "add-bonus",
-                    message, shareAuditDTO);
+                    message,
+                    shareAuditDTO);
+        } else {
+            // 审核拒绝 不加积分
+            this.auditByIdInDB(id, shareAuditDTO);
         }
 
 
         // 2.修改状态为通过或拒绝
-        share.setAuditStatus(shareAuditDTO.getAuditStatusEnum().toString());
-        this.shareMapper.updateByPrimaryKey(share);
+//        auditByIdInDB(shareAuditDTO, share);
 
         // 3.如果通过 则为发布人增加积分 (需调其他微服务的api)
         //   userCenterFeignClient.addBouns(id,500)
@@ -180,7 +198,7 @@ public class ShareService {
         // - MQ
 
         // 发送消息给MQ topic为add-bonus
-        this.rocketMQTemplate.convertAndSend("add-bonus",addBonusMsgDTO);
+//        this.rocketMQTemplate.convertAndSend("add-bonus", addBonusMsgDTO);
 
         // TODO 针对事务问题 ，如果这里抛出异常，则本地事务回滚，MQ已发送成功，消费端则未回滚
         // 方案：两次提交机制
@@ -194,5 +212,30 @@ public class ShareService {
 
 
         return share;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void auditByIdInDB(Integer id, ShareAuditDTO shareAuditDTO) {
+        Share share = Share.builder()
+                .id(id)
+                .auditStatus(shareAuditDTO.getAuditStatusEnum().toString())
+                .reason(shareAuditDTO.getReason())
+                .build();
+
+        this.shareMapper.updateByPrimaryKeySelective(share);
+    }
+
+    // 执行本地事务并 保存日志
+    @Transactional(rollbackFor = Exception.class)
+    public void auditByIdWithRocketMqLog(Integer id, ShareAuditDTO shareAuditDTO, String transactionalID) {
+        this.auditByIdInDB(id, shareAuditDTO);
+
+        RocketMqTransaction rocketMqTransaction = RocketMqTransaction.builder()
+                .transactionId(transactionalID)
+                .log("审核内容")
+                .createTime(new Date())
+                .build();
+
+        this.rocketMqTransactionMapper.insert(rocketMqTransaction);
     }
 }

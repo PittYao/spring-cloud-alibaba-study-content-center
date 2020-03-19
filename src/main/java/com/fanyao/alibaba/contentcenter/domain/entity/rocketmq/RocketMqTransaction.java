@@ -30,4 +30,7 @@ public class RocketMqTransaction {
 
     @Column(name = "log")
     private String log;
+
+    @Column(name = "create_time")
+    private Date createTime;
 }
