@@ -4,9 +4,7 @@ import com.fanyao.alibaba.contentcenter.dao.rocketmq.RocketMqTransactionMapper;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareAuditDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.rocketmq.RocketMqTransaction;
 import com.fanyao.alibaba.contentcenter.service.ShareService;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
@@ -48,7 +46,7 @@ public class AddBonusTransactionListener implements RocketMQLocalTransactionList
             // 方案： MQ 长时间未接受到 RocketMQLocalTransactionState 会执行checkLocalTransaction
             // 执行成功后 存储本次事务信息到DB中，用于check查询事务执行状态
             // 成功 二次提交为 commit
-            return RocketMQLocalTransactionState.UNKNOWN;
+            return RocketMQLocalTransactionState.COMMIT;
         } catch (Exception e) {
             // 失败 二次提交为 rollback
             return RocketMQLocalTransactionState.ROLLBACK;

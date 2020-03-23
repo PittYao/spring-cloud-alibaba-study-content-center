@@ -211,7 +211,9 @@ public class ShareService {
 //        int i = 1 / 0;
 
 
-        return share;
+        return this.shareMapper.selectByPrimaryKey(id);
+
+//        return share;
     }
 
     @Transactional(rollbackFor = Exception.class)

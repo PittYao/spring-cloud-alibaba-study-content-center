@@ -44,11 +44,20 @@ spring:
       filter:
         # 打开/关闭对spring 端点保护
         enabled: true
+    #---------------stream----------------#
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+
+      bindings:
+        output:
+          destination: stream-test-topic
 
 # ---------------------ribbon--------------------------------#
 # ribbon 不支持 配置文件的全局配置
 # 开启饥饿加载(项目启动就创建实例),解决指定服务第一次请求过慢的问题
-ribbon:
+ribbon:/
   eager-load:
     enabled: true
     # 指定饥饿加载哪些服务
