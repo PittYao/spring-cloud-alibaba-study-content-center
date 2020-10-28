@@ -1,4 +1,6 @@
 package com.fanyao.alibaba.contentcenter;
+import java.util.Date;
+import java.util.List;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
@@ -45,10 +47,11 @@ public class TestController {
     private final DiscoveryClient discoveryClient;
     private final TestUserCenterFeignClient testUserCenterFeignClient;
     private final TestFeignOutRibbonClient testFeignOutRibbonClient;
+    private final TestService testService;
 
 
     @GetMapping("test")
-    public List<Share> testInsert() {
+    public List<Share> testInsert(){
         Share share = new Share();
         share.setUserId(0);
         share.setTitle("");
@@ -70,13 +73,12 @@ public class TestController {
         return shareMapper.selectAll();
     }
 
-    /**
+    /** 
      * 测试从注册中心做服务发现
-     *
      * @return 服务的所有实例列表
      */
     @GetMapping("/test2")
-    public List<ServiceInstance> setDiscoveryClient() {
+    public List<ServiceInstance> setDiscoveryClient(){
         // 查询content-center的实例列表
         // consul/zookeeper/eureka 等都可以用discoveryClient
         return this.discoveryClient.getInstances("user-center");
@@ -86,7 +88,7 @@ public class TestController {
      * 测试feign GET 请求
      */
     @GetMapping("/test-get")
-    public UserDTO query(UserDTO userDTO) {
+    public UserDTO query(UserDTO userDTO){
         return testUserCenterFeignClient.query(userDTO);
     }
 
@@ -94,15 +96,15 @@ public class TestController {
      * 测试feign GET 请求
      */
     @GetMapping("/test-get/common")
-    public UserDTO queryByCommon(UserDTO userDTO) {
-        return testUserCenterFeignClient.query(userDTO.getId(), userDTO.getWxId());
+    public UserDTO queryByCommon(UserDTO userDTO){
+        return testUserCenterFeignClient.query(userDTO.getId(),userDTO.getWxId());
     }
 
     /**
      * 测试feign POST 请求
      */
     @PostMapping("/test-post")
-    public UserDTO post(UserDTO userDTO) {
+    public UserDTO post(UserDTO userDTO){
         return testUserCenterFeignClient.post(userDTO);
     }
 
@@ -110,7 +112,7 @@ public class TestController {
      * 测试feign 脱离ribbon单独使用
      */
     @GetMapping("/baidu")
-    public String feignOutRibbon() {
+    public String feignOutRibbon(){
         return testFeignOutRibbonClient.index();
     }
 
@@ -209,5 +211,24 @@ public class TestController {
                 UserDTO.class,
                 userId
         );
+    }
+
+
+    /**
+     * 测试sentinel 链路流控
+     */
+    @GetMapping("/test-a")
+    public String testA(){
+        this.testService.common();
+        return "test-a";
+    }
+
+    /**
+     * 测试sentinel 链路流控
+     */
+    @GetMapping("/test-b")
+    public String testB(){
+        this.testService.common();
+        return "test-b";
     }
 }

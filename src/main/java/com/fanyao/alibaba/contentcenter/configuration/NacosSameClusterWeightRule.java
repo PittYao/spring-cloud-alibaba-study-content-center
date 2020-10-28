@@ -73,19 +73,19 @@ public class NacosSameClusterWeightRule extends AbstractLoadBalancerRule {
             // 如果配置了集群名称，需筛选同集群下元数据匹配的实例
             if (Strings.isNotBlank(clusterName)) {
                 // 3. 过滤出和配置中同一集群的实例
-                List<Instance> sameCluterInstances = chooseInstances.stream()
+                List<Instance> sameClusterInstances = chooseInstances.stream()
                         .filter(instance -> Objects.equals(instance.getClusterName(), clusterName))
                         .collect(Collectors.toList());
 
                 // 4. 如果同集群没有可用实例 调用其他集群实例
-                if (CollectionUtils.isEmpty(sameCluterInstances)) {
+                if (CollectionUtils.isEmpty(sameClusterInstances)) {
                     chooseInstances = instances;
                     log.warn("选择实例时,出现跨集群调用,name = {},chooseInstances = {}",
                             name,
                             chooseInstances.toString()
                     );
                 } else {
-                    chooseInstances = sameCluterInstances;
+                    chooseInstances = sameClusterInstances;
                 }
             }
 

@@ -44,6 +44,15 @@ spring:
       filter:
         # 打开/关闭对spring 端点保护
         enabled: true
+    #---------------stream----------------#
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+
+      bindings:
+        output:
+          destination: stream-test-topic
 
 # ---------------------ribbon--------------------------------#
 # ribbon 不支持 配置文件的全局配置
@@ -74,8 +83,6 @@ feign:
         loggerLevel: FULL
         connectTimeout: 5000
         readTimeout: 5000
-        # 配置feign拦截器
-        requestInterceptors: com.fanyao.alibaba.contentcenter.feignclient.interceptor.TokenRelayRequestInterceptor
 
   #      # 细粒度配置 调用服务的服务名
   #      user-center:
@@ -103,15 +110,6 @@ resttemplate:
   sentinel:
     # 关闭@SentinelRestTemplate 在开发阶段,不想起用流控和降级设置为false
     enabled: true
-
-
-jwt:
-  secret: 秘钥
-  # 有效期，单位秒，默认2周
-  expire-time-in-second: 1209600
-
-
-
 ---
 spring:
   profiles: dev
