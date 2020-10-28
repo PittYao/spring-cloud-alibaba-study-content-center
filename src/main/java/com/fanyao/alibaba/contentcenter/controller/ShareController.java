@@ -1,13 +1,11 @@
 package com.fanyao.alibaba.contentcenter.controller;
 
+import com.fanyao.alibaba.contentcenter.auth.CheckLogin;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareDTO;
 import com.fanyao.alibaba.contentcenter.service.ShareService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: bugProvider
@@ -30,8 +28,12 @@ public class ShareController {
         return shareService.findByIdRibbon(id);
     }
 
+    // 接收header 中的 token
     @GetMapping("/feign/{id}")
+    @CheckLogin
     public ShareDTO findByIdByFeign(@PathVariable Integer id) {
         return shareService.findByIdByFeign(id);
     }
+
+
 }

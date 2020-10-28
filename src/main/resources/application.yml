@@ -74,6 +74,8 @@ feign:
         loggerLevel: FULL
         connectTimeout: 5000
         readTimeout: 5000
+        # 配置feign拦截器
+        requestInterceptors: com.fanyao.alibaba.contentcenter.feignclient.interceptor.TokenRelayRequestInterceptor
 
   #      # 细粒度配置 调用服务的服务名
   #      user-center:
@@ -101,6 +103,15 @@ resttemplate:
   sentinel:
     # 关闭@SentinelRestTemplate 在开发阶段,不想起用流控和降级设置为false
     enabled: true
+
+
+jwt:
+  secret: 秘钥
+  # 有效期，单位秒，默认2周
+  expire-time-in-second: 1209600
+
+
+
 ---
 spring:
   profiles: dev

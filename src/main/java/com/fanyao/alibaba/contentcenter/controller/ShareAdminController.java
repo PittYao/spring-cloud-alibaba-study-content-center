@@ -1,5 +1,6 @@
 package com.fanyao.alibaba.contentcenter.controller;
 
+import com.fanyao.alibaba.contentcenter.auth.CheckAuthorization;
 import com.fanyao.alibaba.contentcenter.domain.dto.share.ShareAuditDTO;
 import com.fanyao.alibaba.contentcenter.domain.entity.share.Share;
 import com.fanyao.alibaba.contentcenter.service.ShareService;
@@ -20,12 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/shares")
 public class ShareAdminController {
     private final ShareService shareService;
+
     /** 
      * 审核指定内容
      * @param id	
      * @param shareAuditDTO
      */
     @PutMapping("/audit/{id}")
+    @CheckAuthorization("admin")
     public Share auditById(@PathVariable Integer id, ShareAuditDTO shareAuditDTO){
         // TODO 权限校验
         return shareService.auditById(id, shareAuditDTO);

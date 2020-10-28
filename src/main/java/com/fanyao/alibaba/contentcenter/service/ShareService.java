@@ -95,7 +95,7 @@ public class ShareService {
         return shareDTO;
     }
 
-    // fegin消费实例
+    // feign消费实例
     public ShareDTO findByIdByFeign(Integer id) {
         Share share = shareMapper.selectByPrimaryKey(id);
 

@@ -1,0 +1,23 @@
+### Get request with parameter
+GET http://localhost:8050/test2
+Accept: application/json
+
+### get请求
+GET http://localhost:8050/test-get?id=1
+Accept: application/json
+
+### get请求
+GET http://localhost:8050/test-get/common?id=1&wxId=32
+Accept: application/json
+
+
+### post请求
+POST http://localhost:8050/test-post
+Content-Type: application/json
+
+{
+  "id": 999,
+  "wxId": "wxId"
+}
+
+###
